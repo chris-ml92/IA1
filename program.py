@@ -4,77 +4,82 @@ Python program to solve N QUeen Problem in different ways:
     Constraint Propagation and Backtracking
     Local optimization (hill climbing)
     Global optimization (simulated annealing)
+    Global optimization (genetic)
 
 Change global var N to change the problem size.
 Change global var K to change how many iterations per solver.
 Change global var division for text separation layout.
 """
-global N = 8
-global K = 100
-global division = '\n'+'-'*75+'\n'
+global N 
+N = 8
+global K
+K = 100
+global division
+division = '\n'+'-'*75+'\n'
+
+# --- Auxiliary Functions ---
+
+# Print solutions
+def printSolution(board): 
+	for i in range(N): 
+		for j in range(N): 
+			print board[i][j], 
+		print
 
 # Same starting conditions for all the solvers inside problem_set
-# We can compare solver results
 def run_all(problem_set):
 
-    print('CSP And backtracking:\n')
-    run_one(problem_set, first_choice_hill_climb)
+    print('Backtracking (depth-first search):\n')
+    printSolution( csp_back(N) )
     
     print(division)
 
     print('First choice hill climb:\n')
-    run_one(problem_set, first_choice_hill_climb)
+    printSolution( first_choice_hill_climb(single_problem) )
     
     print(division)
 
     print('Steepest ascent hill climb:\n')
-    run_one(problem_set, steepest_ascent_hill_climb)
+    printSolution( steepest_ascent_hill_climb(single_problem) )
     
     print(division)
 
     print('Random restart hill climb:\n')
-    run_one(problem_set, lambda x: random_restart_hill_climb(problem_set[0].__class__))
+    printSolution( random_restart_hill_climb(single_problem) )
     
     print(division)
 
     print('Simulated annealing:\n')
-    run_one(problem_set, lambda x: simulated_annealing(x, [0.9**(0.05*i-10) for i in range(1, 2000)]))
+    printSolution( simulated_annealing(single_problem) )
 
-# Solver execution wrapper
-def run_one(problem_set, search_function):
+    print(division)
 
-    num_iterations = len(problem_set)
+    print('Simulated annealing:\n')
+    printSolution( genetic_solver(single_problem) )
 
-    results = []
-    for problem_num, problem in enumerate(problem_set):
-        print('\rSolving problem ' + str(problem_num+1) + ' of ' + str(num_iterations), end='', flush=True)
-        start_time = timer()
-        result = search_function(problem)
-        result['time'] = (timer()-start_time)*1000
-        result['optimal_cost'] = problem.optimal_solution_cost()
-        result['path_length'] = len(result['solution'])-1
-        results.append(result)
+# Generate boards with random placed queens
+def gen_problem():
+    board = [[0 for x in range(N)] for y in range(N)]
 
-    print(' '*50 + '\r', end='', flush=True)
+    from random import randint
 
-    # Aggregate results
-    results = [results,
-               [result for result in results if result['outcome'] == 'success'],
-               [result for result in results if result['outcome'] == 'failure']]
+    for _ in range(N):
+        board[randint(0, N-1)][randint(0, N-1)] = 1    
+    return board
 
-    print_results(results)
-
-# Main
-print(' --- PROGRAM STARTED --- \n')
+# --- Main Program ---
+print(' --- PROGRAM STARTED --- ')
 print(division)
 
-from queens import QueensProblem
+from solvers import *
 
 # Generate an array of problems to be solved and analyzed
-problem_set = [QueensProblem() for _ in range(K)]
+single_problem = gen_problem()
+#problem_set = [gen_problem() for _ in range(K)]
 
 # Run the solvers
-run_all(problem_set)
+run_all(single_problem)
+#run_all(problem_set)
 
 print(division)
-print(' --- PROGRAM ENDED --- \n')
+print(' --- PROGRAM ENDED --- ')

@@ -1,7 +1,7 @@
 from statistics import mean, stdev
 from timeit import default_timer as timer
 from search import steepest_ascent_hill_climb, first_choice_hill_climb, random_restart_hill_climb, \
-    simulated_annealing, astar
+    simulated_annealing
 
 
 def mean_sd_for_dict_key(result_list, key):
@@ -134,11 +134,6 @@ def analyze_all_algorithms(problem_set):
     print('Result from simulated annealing:\n')
     analyze_performance(problem_set, lambda x: simulated_annealing(x, [0.9**(0.05*i-10) for i in range(1, 2000)]))
     print(section_break)
-
-    print('Results from A*:')
-    analyze_performance(problem_set, astar)
-    print(section_break)
-
 
 print('ANALYZING ALGORITHM PERFORMANCE FOR 8-QUEENS PROBLEMS:')
 from queens import QueensProblem
