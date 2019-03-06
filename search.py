@@ -2,7 +2,6 @@ from random import choice, random
 from math import exp
 from heapq import heappop, heappush
 
-
 def steepest_ascent_hill_climb(problem, allow_sideways=False, max_sideways=100):
 
     def get_best_child(node, problem):
@@ -43,52 +42,6 @@ def steepest_ascent_hill_climb(problem, allow_sideways=False, max_sideways=100):
             'problem': problem}
 
 
-def astar(problem):
-
-    path_costs = {problem.start_state: problem.start_state.path_cost}
-    frontier = [problem.start_state]
-    explored = set()
-    result = None
-    total_nodes = 1
-
-    while not result:
-        node = heappop(frontier)
-        explored.add(node)
-
-        if problem.goal_test(node):
-            result = node
-            break
-
-        children = node.get_children()
-        total_nodes += len(children)
-
-        for child in children:
-
-            child.parent = node
-            child.path_cost = node.path_cost+1
-            child.f_cost = child.path_cost + problem.cost_function(child)
-
-            if child not in frontier:
-                if child not in explored:
-                    path_costs[child] = child.path_cost
-                    heappush(frontier, child)
-            elif child.path_cost < path_costs[child]:
-                frontier.remove(child)
-                heappush(frontier, child)
-                path_costs[child] = child.path_cost
-
-        if not frontier:
-            return {'outcome': 'failed'}
-
-    path = []
-    while result:
-        path.append(result)
-        result = result.parent
-    path.reverse()
-
-    return {'outcome': 'success', 'solution': path, 'total_nodes': total_nodes, 'problem': problem}
-
-
 def first_choice_hill_climb(problem, num_successors=100, allow_sideways=False):
 
     child = problem.start_state
@@ -114,7 +67,6 @@ def first_choice_hill_climb(problem, num_successors=100, allow_sideways=False):
             'solution': path,
             'problem': problem}
 
-
 def random_restart_hill_climb(random_problem_generator, num_restarts=100, allow_sideways=False, max_sideways=100):
 
     path = []
@@ -130,7 +82,6 @@ def random_restart_hill_climb(random_problem_generator, num_restarts=100, allow_
 
     result['solution'] = path
     return result
-
 
 def simulated_annealing(problem, temperature_schedule):
     node = problem.start_state
