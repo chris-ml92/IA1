@@ -1,5 +1,5 @@
 """ 
-Python program to solve N QUeen Problem in different ways:
+Python program to solve the N Queen Problem in different ways:
 
     Constraint Propagation and Backtracking
     Local optimization (hill climbing)
@@ -11,7 +11,7 @@ Change global var K to change how many iterations per solver.
 Change global var division for text separation layout.
 """
 global N 
-N = 8
+N = 10
 global K
 K = 100
 global division
@@ -63,12 +63,12 @@ def gen_problem():
 
     from random import randint
 
-    for _ in range(N):
-        board[randint(0, N-1)][randint(0, N-1)] = 1    
+    for i in range(N):
+        board[randint(0, N-1)][i] = 1    
     return board
 
 # --- Main Program ---
-print(' --- PROGRAM STARTED --- ')
+print('PROGRAM STARTED')
 print(division)
 
 from solvers import *
@@ -82,4 +82,4 @@ run_all(single_problem)
 #run_all(problem_set)
 
 print(division)
-print(' --- PROGRAM ENDED --- ')
+print('PROGRAM ENDED')

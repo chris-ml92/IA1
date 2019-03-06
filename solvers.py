@@ -1,7 +1,13 @@
-from random import choice, random
-from math import exp
-from heapq import heappop, heappush
+"""
+Python program to solve the N Queen Problem in different ways:
 
+    Constraint Propagation and Backtracking
+    Local optimization (hill climbing)
+    Global optimization (simulated annealing)
+    Global optimization (genetic)
+
+This is the solver implementation file.
+"""
 def partial_attack(board, row, col, N): 
 	# Check row on left side 
 	for i in range(col): 
@@ -27,8 +33,23 @@ def full_attack(board, row, col, N):
 	for i in range(N): 
 		if board[i][col] == 1: 
 			return False
-	# check diagonals
-	
+	# Check upper diagonal on left side 
+	for i, j in zip(range(row, -1, -1), range(col, -1, -1)): 
+		if board[i][j] == 1: 
+			return False
+	# Check upper diagonal on right side 
+	for i, j in zip(range(row, -1, -1), range(col, N, 1)): 
+		if board[i][j] == 1: 
+			return False
+	# Check lower diagonal on left side 
+	for i, j in zip(range(row, N, 1), range(col, -1, -1)): 
+		if board[i][j] == 1: 
+			return False
+	# Check lower diagonal on right side 
+	for i, j in zip(range(row, N, 1), range(col, N, 1)): 
+		if board[i][j] == 1: 
+			return False
+
 	return True
 
 def solve_recursive(board, col, N): 
@@ -48,6 +69,8 @@ def solve_recursive(board, col, N):
 
 	return False
 
+
+# Solver Functions
 def csp_back(N):
     board = [[0 for x in range(N)] for y in range(N)] 
 
@@ -56,17 +79,17 @@ def csp_back(N):
 
     return board
 
-def steepest_ascent_hill_climb(problem):
-    pass
+def steepest_ascent_hill_climb(board):
+    return board
 
-def first_choice_hill_climb(problem, num_successors=100):
-    pass
+def first_choice_hill_climb(board, num_successors=100):
+	return board
 
-def random_restart_hill_climb(problem, num_restarts=100):
-    pass
+def random_restart_hill_climb(board, num_restarts=100):
+    return board
 
-def simulated_annealing(problem):
-    pass
+def simulated_annealing(board):
+    return board
 
-def genetic_solver(problem):
-    pass
+def genetic_solver(board):
+    return board
