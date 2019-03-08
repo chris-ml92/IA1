@@ -1,71 +1,59 @@
 """ 
 Python program to solve the N Queen Problem in different ways:
 
-    Constraint Propagation and Backtracking
-    Local optimization (hill climbing)
-    Global optimization (simulated annealing)
-    Global optimization (genetic)
+	Constraint Propagation and Backtracking
+	Local optimization (hill climbing)
+	Global optimization (simulated annealing)
+	Global optimization (genetic)
 
 Change global var N to change the problem size.
 Change global var K to change how many iterations per solver.
 Change global var division for text separation layout.
 """
+import sys
+import copy
+
 global N 
-N = 10
+N = 8
 global K
 K = 100
 global division
 division = '\n'+'-'*75+'\n'
 
-# --- Auxiliary Functions ---
-
-# Print solutions
-def printSolution(board): 
-	for i in range(N): 
-		for j in range(N): 
-			print board[i][j], 
-		print
-
 # Same starting conditions for all the solvers inside problem_set
 def run_all(problem_set):
 
-    print('Backtracking (depth-first search):\n')
-    printSolution( csp_back(N) )
-    
-    print(division)
+	print('Backtracking (depth-first search):\n')
+	printSolution( csp_back(N), N )
+	
+	print(division)
 
-    print('First choice hill climb:\n')
-    printSolution( first_choice_hill_climb(single_problem) )
-    
-    print(division)
+	print('Problem to be solved:\n')
+	printSolution(single_problem, N)
+	print(division)
 
-    print('Steepest ascent hill climb:\n')
-    printSolution( steepest_ascent_hill_climb(single_problem) )
-    
-    print(division)
+	print('First choice hill climb:\n')
+	printSolution( first_choice_hill_climb(single_problem, N, 10), N )
+	
+	print(division)
 
-    print('Random restart hill climb:\n')
-    printSolution( random_restart_hill_climb(single_problem) )
-    
-    print(division)
+	print('Steepest ascent hill climb:\n')
+	printSolution( steepest_ascent_hill_climb(single_problem, N), N )
+	
+	print(division)
 
-    print('Simulated annealing:\n')
-    printSolution( simulated_annealing(single_problem) )
+	print('Random restart hill climb:\n')
+	printSolution( random_restart_hill_climb(single_problem, N), N )
+	
+	print(division)
 
-    print(division)
+	print('Simulated annealing:\n')
+	printSolution( simulated_annealing(single_problem, N), N )
 
-    print('Simulated annealing:\n')
-    printSolution( genetic_solver(single_problem) )
+	print(division)
 
-# Generate boards with random placed queens
-def gen_problem():
-    board = [[0 for x in range(N)] for y in range(N)]
-
-    from random import randint
-
-    for i in range(N):
-        board[randint(0, N-1)][i] = 1    
-    return board
+	print('Genetic solver:\n')
+	printSolution( genetic_solver(single_problem, N), N )
 
 # --- Main Program ---
 print('PROGRAM STARTED')
@@ -74,7 +62,7 @@ print(division)
 from solvers import *
 
 # Generate an array of problems to be solved and analyzed
-single_problem = gen_problem()
+single_problem = gen_problem(N)
 #problem_set = [gen_problem() for _ in range(K)]
 
 # Run the solvers
