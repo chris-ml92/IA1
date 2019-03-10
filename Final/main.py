@@ -10,7 +10,7 @@ if __name__ == "__main__":
 	N = 8
 	# Max Steps
 	S = 10000
-	# Random restarts
+	# Restarts
 	R = 10
 	# Backtracking
 	print('Backtracking (depth-first search):\n')
@@ -28,7 +28,7 @@ if __name__ == "__main__":
 	backtracking.printSolution(solution_h, N)
 	print(division)
 
-	print('Hill climb random restart:\n')
+	print('Hill climb with restarts:\n')
 	best_sol = None
 	best_sol_steps = S+1
 	for run in range(R):
@@ -38,14 +38,13 @@ if __name__ == "__main__":
 			best_sol_steps = steps
 			print("Best solution so far:"+str(best_sol_steps) ) 
 
-	print("Best solution found steps value: "+str(best_sol_steps) ) 
+	print("Best solution found steps value: "+str(best_sol_steps)+"\n" ) 
 	backtracking.printSolution(best_sol, N)
 	print(division)
 	
 	print('Genetic:\n')
-	solution_g = genetic_lib.genetic(problem, N)
+	solution_g = genetic_lib.genetic(problem, S, N)
 	backtracking.printSolution(solution_g, N)
 	print(division)
 	
-	print(division)
 	print('PROGRAM ENDED')
