@@ -88,7 +88,7 @@ def Selection(population, probabilities):
 	return best_mother, best_father
 
 # ???
-def parents(population, max_pop, rel_pop, mutation_prob, N, prob_crossover):
+def new_gen_population(population, max_pop, rel_pop, mutation_prob, N, prob_crossover):
 	newPop = []
 	for i in range(0, int(max_pop/2)):
 		mother, father = Selection(population, rel_pop)
@@ -134,7 +134,7 @@ def genetic(problem, max_generations, N):
 	# ... continue to mix and match
 	while not max_fitness in [fitness(i, max_fitness) for i in population]:
 		pList = [probs(n, fitness, max_fitness) for n in population]
-		population = parents(population, max_population, pList, prob_mutation, N, prob_crossover)
+		population = new_gen_population(population, max_population, pList, prob_mutation, N, prob_crossover)
 		generation += 1
 		best_fitness = max([fitness(i, max_fitness) for i in population])
 		print("\rRunning with generation: "+str(generation)+" Fitness: "+str(best_fitness)+"/"+str(max_fitness), end='', flush=True )
