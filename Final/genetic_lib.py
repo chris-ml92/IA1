@@ -69,52 +69,59 @@ def mutate(a, mutation_prob):
 
 	return a
 
+def Selection(population, probabilities, start,end):
+	populationWithProbabilty = [(a,b) for a,b in zip(population, probabilities)]
+	best_mother = None
+	best_mother_p = -1
+
+	for i in range(start,end+1):
+		pop,prob = populationWithProbabilty[i]
+		if prob > best_mother_p:
+			best_mother_p = prob
+			best_mother = pop
+
+	return best_mother
+
+
 # Generate a new population using best mother and fathers
 def new_gen_population(population, max_pop, pList, mutation_prob, N, prob_crossover):
-	# Populations
-	old_pop_list = [(a,b) for a,b in zip(population, pList)]
-	new_pop_list = []
-	list_of_leaders = []
-	
-	# Sorting old pop on fitness
-	def sort_on_fitness(L): 
-		return L[1]  
-	
-	# Order by fitness ascending (best at the end)
-	old_pop_list.sort(key = sort_on_fitness)
-
-	# Best Leaders = 20% of list
-	for i in range(0, int(max_pop * 0.2)):	
-		item = old_pop_list.pop()
-		list_of_leaders.append(item[0])
-	
-	# !!! CHRIS EDIT HERE !!!
-	# Randomly pick some bad ones with p = 20%
-	for i in range(0, len(old_pop_list)):	
-		item = old_pop_list.pop()
-		if random.random() < 0.2:
-			list_of_leaders.append(item[0])
-	
-	# Generate new pop using list_of_leaders
+	newPop = []
 	for i in range(0, int(max_pop/2)):
-		mother = random.choice(list_of_leaders)
-		father = random.choice(list_of_leaders)
+
+		#create a list of length  equal to 25% of the population
+		#were individuals are the best ones from random sub-lists of the population
+		listofLeaders = []
+		reduced_pop_size = int(max_pop * 0.10)
+
+		#generate 2 random indexes, not equal
+		for i in range(0, reduced_pop_size):
+			start_index = random.randint(0, max_pop-1)
+			end_index = random.randint(0, max_pop-1)
+			while start_index == end_index: # check they're not the same
+				end_index = random.randint(0, max_pop-1)
+			if start_index > end_index: # check order of indexes
+				index1, end_index = end_index, start_index
+
+		listofLeaders.append(Selection(population,pList,start_index,end_index))
+
+		mother = random.choice(listofLeaders)
+		father = random.choice(listofLeaders)
 
 		# If we find two identical ndividuals we just mutate one of them
-		# Increase mutations in late runs.
-		# TO BE OPTIMIZED 
-		if mother == father:
-			father = mutate(father, 1)
+		# Increase mutations in late runs. AKA cheating =)
+		# TO BE OPTIMIZED
+		#if mother == father:
+		#	father = mutate(father,1)
 
 		childL = crossover(mother, father, N, prob_crossover)
 
 		child1 = mutate(childL[0], mutation_prob)
 		child2 = mutate(childL[1], mutation_prob)
 
-		new_pop_list.append(child1)
-		new_pop_list.append(child2)
+		newPop.append(child1)
+		newPop.append(child2)
 
-	return new_pop_list
+	return newPop
 
 def random_individual(N):
 	list = []
@@ -122,8 +129,8 @@ def random_individual(N):
 		list.append(random.randint(0, N-1))
 	return list
 
-def probs(n , fitness, max_fitness):
-	return fitness(n, max_fitness)/max_fitness
+def probs(n , fitness, max_fitness, sumFitnesses):
+	return fitness(n, max_fitness)/sumFitnesses
 
 def genetic(problem, max_generations, N):
 	max_population = (N**2)*2
@@ -148,11 +155,12 @@ def genetic(problem, max_generations, N):
 	# Init stop cnditions
 	best_pop = None
 	best_pop_fit = 0
-	
+
 	# While not fitness > max_fitness or max generation reached ...
 	# ... continue to mix and match
 	while best_pop_fit != max_fitness:
-		pList = [probs(n, fitness, max_fitness) for n in population]
+		sumFitnesses = sum([fitness(n,max_fitness) for n in population])
+		pList = [probs(n, fitness, max_fitness, sumFitnesses) for n in population]
 		population = new_gen_population(population, max_population, pList, prob_mutation, N, prob_crossover)
 		generation += 1
 		
