@@ -117,7 +117,7 @@ def new_gen_population(population, max_pop, rel_pop, mutation_prob, N, prob_cros
 def random_individual(N):
 	list = []
 	for i in range(N):
-		list.append(random.randint(0, N - 1))
+		list.append(random.randint(0, N-1))
 	return list
 
 def probs(n , fitness, max_fitness):
@@ -125,8 +125,8 @@ def probs(n , fitness, max_fitness):
 
 def genetic(problem, max_generations, N):
 	max_population = (N**2)*2
-	prob_crossover = 0.95
-	prob_mutation = 0.1
+	prob_crossover = 0.9
+	prob_mutation = 0.15
 	max_fitness = calculate_max_fitness(N)
 	population = []
 	generation = 0
@@ -143,29 +143,32 @@ def genetic(problem, max_generations, N):
 	for i in range(max_population-1):
 		population.append(random_individual(N))
 
+	# Init stop cnditions
+	best_pop = None
+	best_pop_fit = 0
+	
 	# While not fitness > max_fitness or max generation reached ...
 	# ... continue to mix and match
-	while not max_fitness in [fitness(i, max_fitness) for i in population]:
+	while best_pop_fit != max_fitness:
 		pList = [probs(n, fitness, max_fitness) for n in population]
 		population = new_gen_population(population, max_population, pList, prob_mutation, N, prob_crossover)
 		generation += 1
-		best_fitness = max([fitness(i, max_fitness) for i in population])
-		print("\rRunning with generation: "+str(generation)+" Fitness: "+str(best_fitness)+"/"+str(max_fitness), end='', flush=True )
+		
+		# Check best so far
+		for i in population:
+			fit = fitness(i, max_fitness)
+			if fit == max_fitness:
+				print("\nFound solution:" + str(i) + " at generation: " + str(generation) + "\n")
+				return printBoard(i, N)
+			else:
+				if fit > best_pop_fit:
+					best_pop_fit = fit
+					best_pop = i
+
+		print("\rRunning with generation: "+str(generation)+" Fitness: "+str(best_pop_fit)+"/"+str(max_fitness)+" ", end='', flush=True )
+		print(best_pop)
 		if generation == max_generations: break
 	
-	# If the previous cycle found someting usefull use it here
-	best_failure = None
-	best_failure_fit = 0
-	for i in population:
-		fit = fitness(i, max_fitness)
-		if fit == max_fitness:
-			print("\nFound solution:" + str(i) + " at generation: " + str(generation) + "\n")
-			return printBoard(i, N)
-		else:
-			if fit > best_failure_fit:
-				best_failure_fit = fit
-				best_failure = i
-	
 	print("\nError - Solution NOT found at generation: " +str(generation) +"\n")
-	print("\nBest failure returned with fit: " +str(best_failure_fit) +"\n")
-	return printBoard(best_failure, N)
+	print("\nBest failure returned with fit: " +str(best_pop_fit) +"\n")
+	return printBoard(best_pop, N)
