@@ -70,29 +70,42 @@ def mutate(a,mutation_prob):
 	return a
 
 # Select mother and father from best individuals 
-def Selection(population, probabilities):
-	populationWithProbabilty = zip(population, probabilities)
+def Selection(population, probabilities, ind1,ind2):
+	populationWithProbabilty = [(a,b) for a,b in zip(population, probabilities)]
 	best_mother = None
-	best_father = None
-	best_mother_p = 0
-	best_father_p = 0
+	best_mother_p = -1
 
-	for pop, prob  in populationWithProbabilty:
+
+	for i in range(ind1,ind2+1):
+		pop,prob = populationWithProbabilty[i]
 		if prob > best_mother_p:
 			best_mother_p = prob
 			best_mother = pop
-		if prob > best_father_p and pop != best_mother:
-			best_father_p = prob
-			best_father = pop
 			
-	return best_mother, best_father
+	return best_mother
 
-# ???
+# genetic algorithm
 def new_gen_population(population, max_pop, rel_pop, mutation_prob, N, prob_crossover):
 	newPop = []
 	for i in range(0, int(max_pop/2)):
-		mother, father = Selection(population, rel_pop)
 
+		#create a list of length  equal to 25% of the population
+		#were individuals are the best ones from random sub-lists of the population
+		listofLeaders = []
+		reduced_pop_size = int(max_pop * 0.25)
+		for i in range(0, reduced_pop_size):
+			index1 = random.randint(0, max_pop-1)
+			index2 = random.randint(0, max_pop-1)
+			while index1 == index2: # check they're not the same
+				index2 = random.randint(0, max_pop-1)
+			if index1 > index2: # check order of indexes
+				temp = index1
+				index1 = index2
+				index2 = temp
+			listofLeaders.append(Selection(population,rel_pop,index1,index2))
+
+		mother = random.choice(listofLeaders)
+		father = random.choice(listofLeaders)
 		childL = crossover(mother, father, N, prob_crossover)
 
 		child1 = mutate(childL[0], mutation_prob)
@@ -111,8 +124,8 @@ def probs(n , fitness, max_fitness):
 	return fitness(n, max_fitness)/max_fitness
 
 def genetic(problem, max_generations, N):
-	max_population = N*2
-	prob_crossover = 0.6
+	max_population = (N**2)*2
+	prob_crossover = 0.95
 	prob_mutation = 0.1
 	max_fitness = calculate_max_fitness(N)
 	population = []
