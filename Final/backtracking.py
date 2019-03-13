@@ -85,6 +85,7 @@ def printSolution(board, N):
 		for j in range(N): 
 			print (str(board[i][j])+" ", end='')
 		print (" ")
+	print(" ")
 
 # Backtracking Solver
 def csp_back(N):
@@ -93,4 +94,4 @@ def csp_back(N):
 	if solve_recursive(board, 0, N) == False: 
 		print ("Bad solution found!")
 
-	return board
+	printSolution(board, N)
