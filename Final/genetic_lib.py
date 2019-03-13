@@ -69,11 +69,13 @@ def mutate(a, mutation_prob):
 
 	return a
 
+# Selection function using tournament selection: selects the best candidate from a sub-list
 def Selection(population, probabilities, start,end):
 	populationWithProbabilty = [(a,b) for a,b in zip(population, probabilities)]
 	best = None
 	best_p = -1
-
+	
+	#check sub-list and find the best fitted value
 	for i in range(start,end+1):
 		pop,prob = populationWithProbabilty[i]
 		if prob > best_p:
@@ -88,6 +90,7 @@ def new_gen_population(population, max_pop, pList, mutation_prob, N, prob_crosso
 	new_pop_list = []
 	list_of_leaders = []
 	
+	#Fill list_of_leaders dividing the list in N parts
 	for i in range(0, max_pop, N):
 		list_of_leaders.append(Selection(population, pList, i, i+N-1 ))
 	
@@ -96,9 +99,10 @@ def new_gen_population(population, max_pop, pList, mutation_prob, N, prob_crosso
 		mother = random.choice(list_of_leaders)
 		father = random.choice(list_of_leaders)
 
-		# If we find two identical ndividuals we just mutate one of them
-		# Increase mutations in late runs.
-		# TO BE OPTIMIZED 
+		# In late runs when convergency is reached,
+		# to find a solution, and avoid local minima
+		# a good idea is to increase the mutation rate
+		# to generate different possible solutions
 		if mother == father and mutation_prob < 1:
 			mutation_prob += 0.05
 
@@ -112,15 +116,18 @@ def new_gen_population(population, max_pop, pList, mutation_prob, N, prob_crosso
 
 	return new_pop_list
 
-def random_individual(N):
+#create a list of queens randomly
+def random_queen_generator(N):
 	list = []
 	for i in range(N):
 		list.append(random.randint(0, N-1))
 	return list
-
-def probs(n , fitness, max_fitness, sumFitnesses):
+	
+# probability of an individual
+def prob_individual(n , fitness, max_fitness, sumFitnesses):
 	return fitness(n, max_fitness)/sumFitnesses
 
+	
 def genetic(problem, max_generations, N):
 	max_population = (N**2)*2
 	prob_crossover = 0.9
@@ -139,7 +146,7 @@ def genetic(problem, max_generations, N):
 
 	# Generate a population
 	for i in range(max_population-1):
-		population.append(random_individual(N))
+		population.append(random_queen_generator(N))
 
 	# Init stop cnditions
 	best_pop = None
@@ -149,13 +156,14 @@ def genetic(problem, max_generations, N):
 	# ... continue to mix and match
 	while best_pop_fit != max_fitness:
 		sumFitnesses = sum([fitness(n,max_fitness) for n in population])
-		pList = [probs(n, fitness, max_fitness, sumFitnesses) for n in population]
+		pList = [prob_individual(n, fitness, max_fitness, sumFitnesses) for n in population]
 		population = new_gen_population(population, max_population, pList, prob_mutation, N, prob_crossover)
 		generation += 1
 		
 		# Check best so far
 		for i in population:
 			fit = fitness(i, max_fitness)
+			print("\rRunning with generation: "+str(generation)+" Fitness: "+str(fit)+"/"+str(max_fitness)+" ", end='', flush=True )
 			if fit == max_fitness:
 				print("\n\nFound solution:" + str(i) + " at generation: " + str(generation) + "\n")
 				return printBoard(i, N)

@@ -13,8 +13,8 @@ def printBoard(sol, N):
 
 	return board
 
-# Select a random queen
-def random_pos(Conflictlist, condition, N):
+# Select a random queen 
+def random_queen_selector(Conflictlist, condition, N):
 	x = random.choice([i for i in range(N) if condition(Conflictlist[i])])
 	return x
 
@@ -26,7 +26,7 @@ def min_conflict_value(sol, csp, var):
 	return n_conflicts_col
 
 # Hill climb solver main part
-def minimize_conflicts(sol, csp, max_steps=1000):
+def hill_climbing_min_conflicts(sol, csp, max_steps=1000):
 	counter = 0
 	for i in range(max_steps):
 		
@@ -36,9 +36,9 @@ def minimize_conflicts(sol, csp, max_steps=1000):
 			print("Solved in " + str(counter) + " steps\nThe solution found is: " +str(sol) +"\n")
 			return sol, counter
 		
-		var = random_pos(number_conflicts, lambda x: x > 0, csp)
+		var = random_queen_selector(number_conflicts, lambda x: x > 0, csp)
 		listConflictsCol = min_conflict_value(sol,csp,var)
-		sol[var] = random_pos(listConflictsCol, lambda x: x == min(listConflictsCol), csp)
+		sol[var] = random_queen_selector(listConflictsCol, lambda x: x == min(listConflictsCol), csp)
 		counter += 1
 	
 	print("\rNot solved after " + str(counter) + " steps", end='', flush=True )
@@ -69,5 +69,5 @@ def hill_climb(problem, max_steps, N):
 				var.append(i)
 	
 	# Solve
-	sol, steps = minimize_conflicts(var, N, max_steps)
+	sol, steps = hill_climbing_min_conflicts(var, N, max_steps)
 	return printBoard(sol, N), steps

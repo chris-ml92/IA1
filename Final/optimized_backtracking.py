@@ -1,50 +1,62 @@
 import random
 
 # Local support class for operations
-class Queen:
+class chessBoard:
     def __init__(self, N):
+		#diagonal from left top to bottom right
         self.diagonals = {}
+		#diagonal from bottom left to top right
         self.anti_diagonals = {}
+		#rows
         self.rows = {}
+		#cols
         self.columns = {}
+		#chessboard dimension
         self.N = N
+		#create board
         self.board = [[0 for x in range(N)] for y in range(N)]
+		
+		
+def check_position(chessBoard, row, col):
+	#check row
+	if row in chessBoard.rows:
+		return False
+	#check col
+	if col in chessBoard.columns:
+		return False
+	#optimization: in a diagonal top to bottom the individuals have the same value row - col
+	if row - col in chessBoard.diagonals:
+		return False
+	#optimization: in a diagonal bottom to top the individuals have the same value row + col	
+	if row + col  in chessBoard.anti_diagonals:
+		return False
+	#return true if element in [row][col] wasn't present
+	return True
 
-def is_cell_safe(Queen, r, c):
-    if r in Queen.rows:
-        return False
-    if c in Queen.columns:
-        return False
-    if r - c in Queen.diagonals:
-        return False
-    if r + c  in Queen.anti_diagonals:
-        return False
+def set_in_queen(chessBoard, row, col):
+    chessBoard.rows[row] = True
+    chessBoard.columns[col] = True
+    chessBoard.diagonals[row - col] = True
+    chessBoard.anti_diagonals[row + col] = True
+    chessBoard.board[row][col] = 1
 
-    return True
+def take_off_queen(chessBoard, row, col):
+    del chessBoard.rows[row]
+    del chessBoard.columns[col] 
+    del chessBoard.diagonals[row - col]
+    del chessBoard.anti_diagonals[row + col]
+    chessBoard.board[row][col] = 0
 
-def place_a_queen(Queen, r, c):
-    Queen.rows[r] = True
-    Queen.columns[c] = True
-    Queen.diagonals[r - c] = True
-    Queen.anti_diagonals[r + c] = True
-    Queen.board[r][c] = 1
-
-def undo_placing_a_queen(Queen, r, c):
-    del Queen.rows[r]
-    del Queen.columns[c]
-    del Queen.diagonals[r - c]
-    del Queen.anti_diagonals[r + c]
-    Queen.board[r][c] = 0
-
-def solve(Queen, column):
-    if column == Queen.N:
+#backtracking algorithm
+def solve(chessBoard, col):
+    if col == chessBoard.N:
        return True
-    for i in range(0,Queen.N):
-        if is_cell_safe(Queen,i, column):
-           place_a_queen(Queen,i, column)
-           if solve(Queen , column + 1) == True:
+    for i in range(0,chessBoard.N):
+        if check_position(chessBoard,i, col):
+           set_in_queen(chessBoard,i, col)
+           if solve(chessBoard , col + 1) == True:
               return True
-           undo_placing_a_queen(Queen,i, column)
+           take_off_queen(chessBoard,i, col)
     return False
 
 # Print board on screen
@@ -58,8 +70,10 @@ def printSolution(Q, N):
 
 # Main algorithm
 def optimized_csp_back(N):
-    sol = Queen(N)
-    col = random.randint(0,N-1)
-    place_a_queen(sol,col,0)
-    solve(sol,1)
-    printSolution(sol, N)
+	sol = chessBoard(N)
+	solve(sol,0)
+	#to generate possible alternative solutions, change the first queen position
+	#col = random.randint(0,N-1)
+	#set_in_queen(sol,col,0)
+	#solve(sol,1)
+	printSolution(sol, N)
