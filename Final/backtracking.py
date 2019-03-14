@@ -29,41 +29,6 @@ def partial_safe(board, row, col, N):
 
 	return True
 
-# Sum for a queen all the conflicts with other queens
-def sum_conflicts(board, row, col, N):
-	h = 0
-	# Check row
-	for i in range(N): 
-		if board[row][i] == 1 and not i == col: 
-			h += 1
-	# Check upper diagonal on left side 
-	for i, j in zip(range(row, -1, -1), range(col, -1, -1)): 
-		if board[i][j] == 1 and not i == row and not j == col: 
-			h += 1
-	# Check upper diagonal on right side 
-	for i, j in zip(range(row, -1, -1), range(col, N, 1)): 
-		if board[i][j] == 1 and not i == row and not j == col: 
-			h += 1
-	# Check lower diagonal on left side 
-	for i, j in zip(range(row, N, 1), range(col, -1, -1)): 
-		if board[i][j] == 1 and not i == row and not j == col: 
-			h += 1
-	# Check lower diagonal on right side 
-	for i, j in zip(range(row, N, 1), range(col, N, 1)): 
-		if board[i][j] == 1 and not i == row and not j == col: 
-			h += 1
-
-	return h
-
-# Count for every queen how many conflicts there are in the board
-def count_attacks(board, N):
-	h = 0
-	for i in range(N):
-		for j in range(N):
-			if board[i][j] == 1: 
-				h += sum_conflicts(board, i, j, N)
-	return h 
-
 # Backtracking Solver Recursive part
 def solve_recursive(board, col, N): 
 	if col >= N: 

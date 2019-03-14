@@ -30,15 +30,15 @@ def hill_climbing_min_conflicts(sol, csp, max_steps=1000):
 	counter = 0
 	for i in range(max_steps):
 		
-		number_conflicts = all_conflicts(sol, csp)
+		list_Queens_conflicts = all_conflicts(sol, csp)
 		
-		if sum(number_conflicts) == 0:
+		if sum(list_Queens_conflicts) == 0:
 			print("Solved in " + str(counter) + " steps\nThe solution found is: " +str(sol) +"\n")
 			return sol, counter
 		
-		var = random_queen_selector(number_conflicts, lambda x: x > 0, csp)
-		listConflictsCol = min_conflict_value(sol,csp,var)
-		sol[var] = random_queen_selector(listConflictsCol, lambda x: x == min(listConflictsCol), csp)
+		var = random_queen_selector(list_Queens_conflicts, lambda x: x > 0, csp)
+		conflicts_selected_Queen = min_conflict_value(sol,csp,var)
+		sol[var] = random_queen_selector(conflicts_selected_Queen, lambda x: x == min(conflicts_selected_Queen), csp)
 		counter += 1
 	
 	print("\rNot solved after " + str(counter) + " steps", end='', flush=True )

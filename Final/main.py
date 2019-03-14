@@ -9,7 +9,7 @@ if __name__ == "__main__":
 	print(division)
 	
 	# Board Size
-	N = 24
+	N = 16
 	
 	# Max Steps
 	S = 10000

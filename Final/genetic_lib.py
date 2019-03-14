@@ -70,8 +70,7 @@ def mutate(a, mutation_prob):
 	return a
 
 # Selection function using tournament selection: selects the best candidate from a sub-list
-def Selection(population, probabilities, start,end):
-	populationWithProbabilty = [(a,b) for a,b in zip(population, probabilities)]
+def Selection(population, probabilities, start,end, populationWithProbabilty):
 	best = None
 	best_p = -1
 	
@@ -89,11 +88,12 @@ def new_gen_population(population, max_pop, pList, mutation_prob, N, prob_crosso
 	# Populations
 	new_pop_list = []
 	list_of_leaders = []
+	populationWithProbabilty = [(a,b) for a,b in zip(population, pList)]
 	nuke = False
 	
 	#Fill list_of_leaders dividing the list in N parts
 	for i in range(0, max_pop, N):
-		list_of_leaders.append(Selection(population, pList, i, i+N-1 ))
+		list_of_leaders.append(Selection(population, pList, i, i+N-1, populationWithProbabilty))
 	
 	# Generate new pop using list_of_leaders
 	for i in range(0, int(max_pop/2)):
