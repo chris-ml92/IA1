@@ -137,7 +137,7 @@ def prob_individual(n , fitness, max_fitness, sumFitnesses):
 def genetic(problem, max_generations, N):
 	max_population = (N**2)*2
 	prob_crossover = 0.85
-	prob_mutation = 0.15
+	prob_mutation = 0.20
 	max_fitness = calculate_max_fitness(N)
 	population = []
 	generation = 0
