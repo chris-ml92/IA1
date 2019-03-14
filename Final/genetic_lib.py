@@ -163,8 +163,8 @@ def genetic(problem, max_generations, N):
 		# Check best so far
 		for i in population:
 			fit = fitness(i, max_fitness)
-			print("\rRunning with generation: "+str(generation)+" Fitness: "+str(fit)+"/"+str(max_fitness)+" ", end='', flush=True )
 			if fit == max_fitness:
+				print("\rRunning with generation: "+str(generation)+" Fitness: "+str(fit)+"/"+str(max_fitness)+" ", end='', flush=True )
 				print("\n\nFound solution:" + str(i) + " at generation: " + str(generation) + "\n")
 				return printBoard(i, N)
 			else:
