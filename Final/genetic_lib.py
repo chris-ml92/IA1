@@ -89,6 +89,7 @@ def new_gen_population(population, max_pop, pList, mutation_prob, N, prob_crosso
 	# Populations
 	new_pop_list = []
 	list_of_leaders = []
+	nuke = False
 	
 	#Fill list_of_leaders dividing the list in N parts
 	for i in range(0, max_pop, N):
@@ -105,6 +106,11 @@ def new_gen_population(population, max_pop, pList, mutation_prob, N, prob_crosso
 		# to generate different possible solutions
 		if mother == father and mutation_prob < 1:
 			mutation_prob += 0.05
+		
+		# Super fast convergence to solution by mutating all childs
+		# after the first couple of equal solution is found
+		if nuke and mother == father and mutation_prob < 1:
+			mutation_prob = 1
 
 		childL = crossover(mother, father, N, prob_crossover)
 
