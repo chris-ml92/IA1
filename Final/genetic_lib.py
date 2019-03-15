@@ -109,7 +109,7 @@ def new_gen_population(population, max_pop, pList, mutation_prob, N, prob_crosso
 		
 		# Super fast convergence to solution by mutating all childs
 		# after the first couple of equal solution is found
-		if nuke and mother == father and mutation_prob < 1:
+		if nuke == True and mother == father and mutation_prob < 1:
 			mutation_prob = 1
 
 		childL = crossover(mother, father, N, prob_crossover)
